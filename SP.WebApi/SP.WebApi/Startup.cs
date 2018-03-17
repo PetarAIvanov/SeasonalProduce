@@ -48,15 +48,25 @@ namespace SP.WebApi
             {
                 SeedData(context);
             }
-            
+
+            RegisterAutomapper();
+
             var builder = new ODataConventionModelBuilder();
-            builder.EntitySet<FoodData>(nameof(FoodData));
+            builder.EntitySet<FoodDataDto>(nameof(FoodData));
 
             app.UseMvc(routebuilder =>
             {
                 routebuilder.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
                 routebuilder.MapODataServiceRoute("odata", null, builder.GetEdmModel());
                 routebuilder.EnableDependencyInjection();
+            });
+        }
+
+        private void RegisterAutomapper()
+        {
+            AutoMapper.Mapper.Initialize(cfg => {
+                cfg.CreateMap<FoodData, FoodDataDto>()
+                .ForMember(x=> x.Category, opt=> opt.MapFrom(x=> x.Category.Name));
             });
         }
 

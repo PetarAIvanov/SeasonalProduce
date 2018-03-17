@@ -11,7 +11,7 @@ namespace SP.WebApi.DTO
 
         public string Name { get; set; }
 
-        public string CategoryName { get; set; }
+        public string Category { get; set; }
 
         public int InSeasonFromMonth { get; set; }
         public int InSeasonToMonth { get; set; }

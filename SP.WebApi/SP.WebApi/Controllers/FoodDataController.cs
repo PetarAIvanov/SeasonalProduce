@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SP.DataModel;
+using SP.WebApi.DTO;
 
 namespace SP.WebApi.Controllers
 {
@@ -21,14 +23,17 @@ namespace SP.WebApi.Controllers
             this.context = context;
         }
         
-        public IQueryable<FoodData> Get()
+        public IQueryable<FoodDataDto> Get()
         {
-            return context.FoodDataItems.Include(x => x.Category).AsQueryable();
+            return context.FoodDataItems.Include(x => x.Category)
+                .AsQueryable()
+                .ProjectTo<FoodDataDto>();
         }
         
-        public SingleResult<FoodData> Get([FromODataUri] int key)
+        public SingleResult<FoodDataDto> Get([FromODataUri] int key)
         {
-            return SingleResult.Create<FoodData>( context.FoodDataItems.Where(x => x.Id == key));
+            return SingleResult.Create<FoodDataDto>( context.FoodDataItems
+                .Where(x => x.Id == key).ProjectTo<FoodDataDto>());
         }
     }
 }
