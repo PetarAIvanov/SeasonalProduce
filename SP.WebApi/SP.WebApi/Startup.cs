@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SP.DataModel;
+using SP.WebApi.DTO;
 
 namespace SP.WebApi
 {
@@ -26,7 +30,7 @@ namespace SP.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-
+            services.AddOData();
             //var connection = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Projects\localdbs\SeasonalProduce.mdf;Integrated Security=True;Connect Timeout=30";
             services.AddDbContext<SeasonalProduceContext>(options => options.UseInMemoryDatabase("SeasonalProduceDb"));
 
@@ -44,8 +48,16 @@ namespace SP.WebApi
             {
                 SeedData(context);
             }
+            
+            var builder = new ODataConventionModelBuilder();
+            builder.EntitySet<FoodData>(nameof(FoodData));
 
-            app.UseMvc();
+            app.UseMvc(routebuilder =>
+            {
+                routebuilder.Count().Filter().OrderBy().Expand().Select().MaxTop(null);
+                routebuilder.MapODataServiceRoute("odata", null, builder.GetEdmModel());
+                routebuilder.EnableDependencyInjection();
+            });
         }
 
         private void SeedData(SeasonalProduceContext context)
