@@ -1,26 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:seasonal_produce_flutter/models/app_state.dart';
+import 'package:built_redux/built_redux.dart';
+import 'package:flutter_built_redux/flutter_built_redux.dart';
+import 'package:seasonal_produce_flutter/actions/actions.dart';
+import 'package:seasonal_produce_flutter/reducers/reducers.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(new SeasonalProduceApp());
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class SeasonalProduceApp extends StatefulWidget {
+  final store = new Store<AppState, AppStateBuilder, AppActions>(
+    reducerBuilder.build(),
+    new AppState.loading(),
+    new AppActions(),
+    middleware: [],
+  );
+
+  @override
+  State<StatefulWidget> createState() {
+    return new SeasonalProduceAppState();
+  }
+}
+
+class SeasonalProduceAppState extends State<SeasonalProduceApp> {
+  Store<AppState, AppStateBuilder, AppActions> store;
+
+  SeasonalProduceApp() {}
+
+  @override
+  void initState() {
+    store = widget.store;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Flutter Demo',
-      theme: new ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
-        // counter didn't reset back to zero; the application is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: new MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+    return new ReduxProvider(
+        store: store,
+        child: new MaterialApp(
+            title: "Seasonal Produce App",
+            theme: new ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            home: new MyHomePage(title: 'Seasonal Produce App')));
   }
 }
 
