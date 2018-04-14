@@ -13,7 +13,7 @@ namespace SP.DataModel
         {
             var builder = new DbContextOptionsBuilder<SeasonalProduceContext>();
             builder.UseSqlServer(
-                 @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Projects\localdbs\SeasonalProduce.mdf;Integrated Security=True;Connect Timeout=30");
+                 @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=F:\Dev\SeasonalProduce\SP.WebApi\SEASONAL_PRODUCE_DB.mdf;Integrated Security=True;Connect Timeout=30");
 
             return new SeasonalProduceContext(builder.Options);
         }
